@@ -3,6 +3,7 @@ import operator
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from skimage import measure
 
 
 def pre_process_image(img, skip_dilate=True):
@@ -140,3 +141,69 @@ def crop_and_warp(img, crop_rect):
     plt.title("warp_image")
     plt.show()
     return warp
+
+
+def remove_stuff(img):
+
+    labels, n_labels = measure.label(img, background=700, return_num=True)
+
+    max_i = -1
+    max_i_count = -1
+
+    for i in range(1, n_labels + 1):
+        a = (labels == i).sum()
+
+        if a > max_i_count:
+            max_i_count = a
+            max_i = i
+
+    # Get the shape of the image
+    h, w = labels.shape
+
+    # Isolate stuff
+    mask = labels == max_i
+
+    i_start = i_end = j_start = j_end = -1
+
+    i = 0
+    while i < h:
+        if mask[i, :].sum() > 0:
+            i_start = i
+            break
+        else:
+            i += 1
+
+    i = h - 1
+    while i >= 0:
+        if mask[i, :].sum() > 0:
+            i_end = i
+            break
+        else:
+            i -= 1
+
+    j = 0
+    while j < w:
+        if mask[:, j].sum() > 0:
+            j_start = j
+            break
+        else:
+            j += 1
+
+    j = w - 1
+    while j >= 0:
+        if mask[:, j].sum() > 0:
+            j_end = j
+            break
+        else:
+            j -= 1
+
+    # For some reason it's best to remove one extra pixel from each side
+    i_start += 1
+    i_end -= 1
+
+    j_start += 1
+    j_end -= 1
+
+    out = img[i_start:i_end, j_start:j_end]
+
+    return out
