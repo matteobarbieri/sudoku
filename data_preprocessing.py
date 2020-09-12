@@ -144,6 +144,24 @@ def crop_and_warp(img, crop_rect):
 
 def remove_stuff(img):
 
+    h, w = img.shape
+
+    h10 = int(h/10)
+    w10 = int(w/10)
+
+    # Make a copy
+    img_cp = np.array(img)
+
+    img_cp = img_cp[h10:, w10:]
+    img_cp = img_cp[:-h10, :-w10]
+
+    return img_cp
+
+
+def remove_stuff_old(img):
+    """
+    Deprecated
+    """
     labels, n_labels = measure.label(img, background=700, return_num=True)
 
     max_i = -1
