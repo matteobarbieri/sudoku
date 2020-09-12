@@ -74,7 +74,10 @@ def get_model(model_name):
 @ex.automain
 def main(_run, lr, batch_size, n_epochs, model):
 
-    train_transform = transforms.Compose([transforms.ToTensor()])
+    train_transform = transforms.Compose([
+        transforms.RandomRotation(10),
+        transforms.ToTensor(),
+    ])
 
     val_transforms = transforms.Compose([transforms.ToTensor()])
 
