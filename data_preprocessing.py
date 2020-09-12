@@ -1,7 +1,6 @@
 import operator
 
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 from skimage import measure
 
@@ -137,9 +136,9 @@ def crop_and_warp(img, crop_rect):
 
     # Performs the transformation on the original image
     warp = cv2.warpPerspective(img, m, (int(side), int(side)))
-    plt.imshow(warp, cmap="gray")
-    plt.title("warp_image")
-    plt.show()
+    # plt.imshow(warp, cmap="gray")
+    # plt.title("warp_image")
+    # plt.show()
     return warp
 
 
