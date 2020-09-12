@@ -35,10 +35,44 @@ def cfg():
     lr = 1e-4  # noqa
     batch_size = 256  # noqa
     n_epochs = 20  # noqa
+    model = "resnet50"  # noqa
+
+
+def get_model(model_name):
+    if model_name == "resnet50":
+
+        net = torchvision.models.resnet50(pretrained=True)
+
+        # Replace 1st layer to use it on grayscale images
+        net.conv1 = nn.Conv2d(
+            1,
+            64,
+            kernel_size=(7, 7),
+            stride=(2, 2),
+            padding=(3, 3),
+            bias=False,
+        )
+        net.fc = nn.Linear(in_features=2048, out_features=10, bias=True)
+    if model_name == "resnet101":
+
+        net = torchvision.models.resnet101(pretrained=True)
+
+        # Replace 1st layer to use it on grayscale images
+        net.conv1 = nn.Conv2d(
+            1,
+            64,
+            kernel_size=(7, 7),
+            stride=(2, 2),
+            padding=(3, 3),
+            bias=False,
+        )
+        net.fc = nn.Linear(in_features=2048, out_features=10, bias=True)
+
+    return net
 
 
 @ex.automain
-def main(_run, lr, batch_size, n_epochs):
+def main(_run, lr, batch_size, n_epochs, model):
 
     train_transform = transforms.Compose([transforms.ToTensor()])
 
@@ -64,14 +98,9 @@ def main(_run, lr, batch_size, n_epochs):
 
     device = "cuda"
 
-    # net = torchvision.models.resnet18(pretrained=True)
-    net = torchvision.models.resnet50(pretrained=True)
+    # Get network
+    net = get_model(model)
 
-    # Replace 1st layer to use it on grayscale images
-    net.conv1 = nn.Conv2d(
-        1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False
-    )
-    net.fc = nn.Linear(in_features=2048, out_features=10, bias=True)
     net = net.to(device)
 
     criterion = nn.CrossEntropyLoss()
@@ -164,6 +193,6 @@ def main(_run, lr, batch_size, n_epochs):
                     running_loss = 0.0
 
         # Save model at the end of every epoch
-        torch.save(net.state_dict(), "./resnet50_mnist.pth")
+        torch.save(net.state_dict(), f"./{model}_mnist.pth")
 
     print("Finished Training")
