@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sudoku solver!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <!--<link href="dist/bootstrap.fd.css" rel="stylesheet">-->
+    <!--<script src="dist/bootstrap.fd.js"></script>-->
+
+    <!--<link href="css/styles.css" rel="stylesheet">-->
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark navbar-static-top navbar-expand-md">
+        <div class="container">
+            <button type="button" class="navbar-toggler"
+                data-toggle="collapse"
+                data-target="#bs-example-navbar-collapse-1" aria-expanded="true"> <span class="sr-only">Toggle navigation</span>
+            </button> <a class="navbar-brand" href="#">Sudoku solver!</a>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <!--
+                <ul class="nav navbar-nav mr-auto">
+                    <li class="active nav-item"><a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item"><a href="/sharks" class="nav-link">Sharks</a>
+                    </li>
+                </ul>
+                -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                
+                <h3>Upload image</h3>
+
+
+                <!--<button id="open_btn" class="btn btn-primary">Open dialog</button>-->
+                <form method="POST" enctype="multipart/form-data" id="the-form">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01"
+                            aria-describedby="inputGroupFileAddon01"
+                            name="the-file">
+                            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btn-submit">Submit</button>
+                </form>
+
+                <!--<div id=aaaa></div>-->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <!--<h3>Response</h3>-->
+                <div id="response"></div>
+
+                <div class=row>
+                    <div class="col-lg-6" id="image_orig">
+                    </div>
+                    <div class="col-lg-6" id="image_solved">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script charset="utf-8" type=text/javascript>
+
+    $(document).ready(function () {
+
+        $("#btn-submit").click(function (event) {
+
+            //stop submit the form, we will post it manually.
+            event.preventDefault();
+
+            // Get form
+            var form = $('#the-form')[0];
+
+            // Create an FormData object
+            var data = new FormData(form);
+
+            // If you want to add an extra field for the FormData
+            data.append("CustomField", "This is some extra data, testing");
+
+            // disabled the submit button
+            $("#btn-submit").prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "http://localhost:5000/sudoku",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    // $("#response").text(data);
+                    $("#image_orig").html($('<img/>').attr(
+                            'src', 'data:image/jpg;base64,' + data.img_orig_base64));
+                    $("#image_solved").html($('<img/>').attr(
+                            'src', 'data:image/jpg;base64,' + data.img_solved_base64));
+
+                    console.log("SUCCESS : ", data);
+                    $("#btn-submit").prop("disabled", false);
+
+                },
+                error: function (e) {
+
+                    $("#response").text(e.responseText);
+                    console.log("ERROR : ", e);
+                    $("#btn-submit").prop("disabled", false);
+
+                }
+            });
+
+        });
+
+    });
+
+    /*
+    $("#open_btn").click(function() {
+            $.FileDialog({
+
+                // MIME type of accepted files, e. g. image/jpeg
+                accept: "*",
+
+                // cancel button
+                cancelButton: "Close",
+
+                // drop zone message
+                dragMessage: "Drop files here",
+
+                // the height of drop zone in pixels
+                dropheight: 400,
+
+                // error message
+                errorMessage: "An error occured while loading file",
+
+                // whether it is possible to choose multiple files or not.
+                multiple: true,
+
+                // OK button
+                okButton: "OK",
+
+                // file reading mode.
+                // BinaryString, Text, DataURL, ArrayBuffer
+                readAs: "DataURL",
+
+                // remove message
+                removeMessage: "Remove&nbsp;file",
+
+                // file dialog title
+                title: "Load file(s)"
+
+                });
+        });
+
+   */
+
+    /*
+    // handle files choice when done
+.on('files.bs.filedialog', function(ev) {
+  var files_list = ev.files;
+  // DO SOMETHING
+});
+
+
+// handle dialog cancelling
+on('cancel.bs.filedialog', function(ev) {
+  // DO SOMETHING
+});
+   */
+
+    function aaa() {
+        // TODO probably should become a post and parameters passed in a better
+        // way
+        $.ajax({url:
+                "http://localhost:8080/data?user_input="+user_input+"&session_id="+session_id,
+                success: function(result){
+
+            $("#response").html("<ul id=\"questions_list\"></ul>");
+            $.each(result.questions, function(i, v) {
+                // console.log(v);
+                $("#questions_list").append("<li>"+v+"</li>");
+            });
+
+            }});
+    }
+    
+</script>
+
+</html>
