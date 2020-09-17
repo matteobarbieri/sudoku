@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # ## Train dataset on MNIST :(
 
 from torch.utils.data import DataLoader
@@ -20,7 +17,9 @@ from sacred import Experiment
 
 from sacred.observers import MongoObserver
 
-ex = Experiment("DELETEME-MNIST")
+from printed_mnist import PrintedMNIST, AddGaussianNoise, AddSPNoise  # noqa
+
+ex = Experiment("PrintedMNIST")
 
 ex.observers.append(
     MongoObserver(
@@ -77,24 +76,14 @@ def main(_run, lr, batch_size, n_epochs, model):
     train_transform = transforms.Compose([
         transforms.RandomRotation(10),
         transforms.ToTensor(),
+        # AddGaussianNoise(0, 1.0),
+        AddSPNoise(0.1),
     ])
 
     val_transforms = transforms.Compose([transforms.ToTensor()])
 
-    train_set = torchvision.datasets.MNIST(
-        "./",
-        train=True,
-        transform=train_transform,
-        target_transform=None,
-        download=True,
-    )
-    val_set = torchvision.datasets.MNIST(
-        "./",
-        train=False,
-        transform=val_transforms,
-        target_transform=None,
-        download=True,
-    )
+    train_set = PrintedMNIST(50000, -666, train_transform)
+    val_set = PrintedMNIST(5000, 33, val_transforms)
 
     train_loader = DataLoader(train_set, batch_size=batch_size)
     val_loader = DataLoader(val_set, batch_size=batch_size)
