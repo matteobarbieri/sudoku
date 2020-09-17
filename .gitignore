@@ -130,3 +130,6 @@ dmypy.json
 
 # Vim .swp files
 *.swp
+
+# Fonts folder
+fonts/
