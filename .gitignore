@@ -133,3 +133,6 @@ dmypy.json
 
 # Fonts folder
 fonts/
+
+# Add .ycm_extra_config.py
+.ycm_extra_config.py
