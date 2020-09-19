@@ -6,6 +6,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
+import glob
 import random
 
 class AddSPNoise(object):
@@ -45,7 +46,10 @@ class PrintedMNIST(Dataset):
         self.random_state = random_state
         self.transform = transform
 
-        self.fonts = ["Helvetica-Bold-Font.ttf", 'arial-bold.ttf']
+        fonts_folder = 'fonts'
+
+        # self.fonts = ["Helvetica-Bold-Font.ttf", 'arial-bold.ttf']
+        self.fonts = glob.glob(fonts_folder + "/*.ttf")
 
         random.seed(random_state)
 
