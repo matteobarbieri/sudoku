@@ -105,7 +105,7 @@
             $.ajax({
                 type: "POST",
                 enctype: 'multipart/form-data',
-                url: "http://localhost:5000/sudoku",
+                url: "http://localhost:8080/sudoku",
                 data: data,
                 processData: false,
                 contentType: false,
@@ -134,76 +134,6 @@
         });
 
     });
-
-    /*
-    $("#open_btn").click(function() {
-            $.FileDialog({
-
-                // MIME type of accepted files, e. g. image/jpeg
-                accept: "*",
-
-                // cancel button
-                cancelButton: "Close",
-
-                // drop zone message
-                dragMessage: "Drop files here",
-
-                // the height of drop zone in pixels
-                dropheight: 400,
-
-                // error message
-                errorMessage: "An error occured while loading file",
-
-                // whether it is possible to choose multiple files or not.
-                multiple: true,
-
-                // OK button
-                okButton: "OK",
-
-                // file reading mode.
-                // BinaryString, Text, DataURL, ArrayBuffer
-                readAs: "DataURL",
-
-                // remove message
-                removeMessage: "Remove&nbsp;file",
-
-                // file dialog title
-                title: "Load file(s)"
-
-                });
-        });
-
-   */
-
-    /*
-    // handle files choice when done
-.on('files.bs.filedialog', function(ev) {
-  var files_list = ev.files;
-  // DO SOMETHING
-});
-
-
-// handle dialog cancelling
-on('cancel.bs.filedialog', function(ev) {
-  // DO SOMETHING
-});
-   */
-
-    function aaa() {
-        // TODO probably should become a post and parameters passed in a better
-        // way
-        $.ajax({url:
-                "http://localhost:8080/data?user_input="+user_input+"&session_id="+session_id,
-                success: function(result){
-
-            $("#response").html("<ul id=\"questions_list\"></ul>");
-            $.each(result.questions, function(i, v) {
-                // console.log(v);
-                $("#questions_list").append("<li>"+v+"</li>");
-            });
-
-            }});
-    }
     
 </script>
 

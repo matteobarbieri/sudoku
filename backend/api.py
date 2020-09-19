@@ -3,7 +3,7 @@ import numpy as np
 import torch
 
 # from flask import Flask, flash, request, redirect, url_for
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, jsonify
 
 from werkzeug.utils import secure_filename
 
@@ -37,9 +37,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-# app = Flask(__name__)
 
 device = 'cuda'
 
@@ -51,43 +48,20 @@ net.load_state_dict(torch.load(model_path))
 net = net.to(device)
 
 
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-
-    response.headers['Access-Control-Allow-Methods'] = \
-        'DELETE, GET, POST, PUT'
-
-    # if request.method == 'OPTIONS':
-        # response.headers['Access-Control-Allow-Methods'] = \
-            # 'DELETE, GET, POST, PUT'
-        # headers = request.headers.get('Access-Control-Request-Headers')
-        # if headers:
-            # response.headers['Access-Control-Allow-Headers'] = headers
-
-    return response
-
-
-app.after_request(add_cors_headers)
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/sudoku', methods=['POST', 'GET'])
+@app.route('/sudoku', methods=['POST'])
 def sudoku():
 
     # TODO retrieve image from POST data
 
-    # check if the post request has the file part
-    print(request.files)
-
     if 'the-file' not in request.files:
         # flash('No file part')
-        return redirect(request.url)
-
-    print("here")
+        return "No file!"
+        # return redirect(request.url)
 
     file = request.files['the-file']
 
@@ -218,6 +192,6 @@ def sudoku():
     return jsonify(output)
 
 
-@app.route('/hello')
+@app.route('/hello', methods=['GET'])
 def hello():
     return {'hello': 'world'}

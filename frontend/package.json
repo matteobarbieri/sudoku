@@ -11,6 +11,7 @@
     "express"
   ],
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "http-proxy": "^1.18.1"
   }
 }
