@@ -14,14 +14,14 @@ import os
 
 from PIL import Image
 
-# FIXME cheap trick to include code from parent folder, fix
+# FIXME cheap trick to include code from src folder, fix
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append('src')
 
 import cv2
 
 # Sudoku-specific imports
-from train_classifier import get_model
 from data_preprocessing import (
     crop_and_warp, find_corners_of_largest_polygon,
     pre_process_image, remove_stuff)
@@ -30,7 +30,7 @@ from classifier import smart_classify
 
 from sudoku_solver import print_board, solve_array
 
-from utils import fill_in_img
+from utils import fill_in_img, get_model
 
 UPLOAD_FOLDER = '/tmp'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -40,9 +40,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 device = 'cuda'
 
-net = get_model("resnet101")
+net = get_model("resnet101", pretrained=False)
 model_path = os.path.join(
-    "..", "models", "resnet101_allfonts_mnist.pth")
+    "models", "resnet101_allfonts_mnist.pth")
 
 net.load_state_dict(torch.load(model_path))
 net = net.to(device)

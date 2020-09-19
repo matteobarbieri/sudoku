@@ -7,7 +7,6 @@ import torch.nn as nn
 
 import torchvision.transforms as transforms
 
-import torchvision
 import torch
 
 
@@ -18,6 +17,8 @@ from sacred import Experiment
 from sacred.observers import MongoObserver
 
 from printed_mnist import PrintedMNIST, AddGaussianNoise, AddSPNoise  # noqa
+
+from utils import get_model
 
 ex = Experiment("PrintedMNIST")
 
@@ -35,39 +36,6 @@ def cfg():
     batch_size = 256  # noqa
     n_epochs = 20  # noqa
     model = "resnet50"  # noqa
-
-
-def get_model(model_name):
-    if model_name == "resnet50":
-
-        net = torchvision.models.resnet50(pretrained=True)
-
-        # Replace 1st layer to use it on grayscale images
-        net.conv1 = nn.Conv2d(
-            1,
-            64,
-            kernel_size=(7, 7),
-            stride=(2, 2),
-            padding=(3, 3),
-            bias=False,
-        )
-        net.fc = nn.Linear(in_features=2048, out_features=10, bias=True)
-    if model_name == "resnet101":
-
-        net = torchvision.models.resnet101(pretrained=True)
-
-        # Replace 1st layer to use it on grayscale images
-        net.conv1 = nn.Conv2d(
-            1,
-            64,
-            kernel_size=(7, 7),
-            stride=(2, 2),
-            padding=(3, 3),
-            bias=False,
-        )
-        net.fc = nn.Linear(in_features=2048, out_features=10, bias=True)
-
-    return net
 
 
 @ex.automain

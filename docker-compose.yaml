@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+
+  backend:
+    image: sudoku-backend
+    runtime: nvidia
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    volumes:
+      - ${PWD}/models:/backend/models
+
+    ports:
+      - 5000:5000
