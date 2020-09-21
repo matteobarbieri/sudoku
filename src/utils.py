@@ -4,6 +4,7 @@ import torchvision
 
 import torch.nn as nn
 
+
 def get_model(model_name, pretrained=True):
     if model_name == "resnet50":
 
@@ -41,7 +42,7 @@ def fill_in_img(resized, original_digits, solved_digits):
 
     draw = ImageDraw.Draw(resized)
 
-    font = ImageFont.truetype("../fonts/Helvetica-Bold-Font.ttf", 40)
+    font = ImageFont.truetype("fonts/Helvetica-Bold-Font.ttf", 40)
 
     w, h = resized.size
     w9, h9 = w/9, h/9

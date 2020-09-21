@@ -11,6 +11,16 @@ services:
 
     volumes:
       - ${PWD}/models:/backend/models
+      - ${PWD}/fonts:/backend/fonts
+
+    #ports:
+      #- 5000:5000
+
+  frontend:
+    image: sudoku-frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
 
     ports:
-      - 5000:5000
+      - 8080:8080

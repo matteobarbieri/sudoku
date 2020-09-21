@@ -21,14 +21,15 @@ router.get('/', function(req,res){
 // Simple test
 app.use('/hello', function(req, res, next) {
     proxy.web(req, res, {
-        target: 'http://localhost:5000/hello',
+        target: 'http://backend:5000/hello',
     }, next);
 });
 
 // Proxy request to actual API server
 app.use('/sudoku', function(req, res, next) {
     proxy.web(req, res, {
-        target: 'http://localhost:5000/sudoku',
+        //target: 'http://localhost:5000/sudoku',
+        target: 'http://backend:5000/sudoku',
     }, next);
 });
 
