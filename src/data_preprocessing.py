@@ -5,7 +5,7 @@ import numpy as np
 from skimage import measure
 
 
-def pre_process_image(img, skip_dilate=True):
+def pre_process_image(img: np.ndarray, skip_dilate: bool=True):
     """
     Uses a blurring function, adaptive thresholding and dilation to expose
     the main features of an image.
@@ -32,31 +32,22 @@ def pre_process_image(img, skip_dilate=True):
         )
         proc = cv2.dilate(proc, kernel)
 
-    #     plt.imshow(proc, cmap='gray')
-    #     plt.title('pre_process_image')
-    #     plt.show()
     return proc
 
 
-def find_corners_of_largest_polygon(img):
+def find_corners_of_largest_polygon(img: np.ndarray):
     """Finds the 4 extreme corners of the largest contour in the image."""
 
     # Find contours
-    # _, contours, h = cv2.findContours(
-    #    img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours, h = cv2.findContours(
         img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )  # Find contours
+    )
 
+    # Sort by area, descending
     contours = sorted(
         contours, key=cv2.contourArea, reverse=True
-    )  # Sort by area, descending
+    )  
     polygon = contours[0]  # Largest image
-
-    # Use of `operator.itemgetter` with `max` and `min` allows us to get the
-    # index of the point.
-    # Each point is an array of 1 coordinate, hence the [0] getter, then [0]
-    # or [1] used to get x and y respectively.
 
     # Bottom-right point has the largest (x + y) value
     # Top-left has point smallest (x + y) value
@@ -136,13 +127,10 @@ def crop_and_warp(img, crop_rect):
 
     # Performs the transformation on the original image
     warp = cv2.warpPerspective(img, m, (int(side), int(side)))
-    # plt.imshow(warp, cmap="gray")
-    # plt.title("warp_image")
-    # plt.show()
     return warp
 
 
-def remove_stuff(img):
+def remove_stuff(img: np.ndarray):
 
     h, w = img.shape
 
