@@ -9,19 +9,21 @@ from PIL import ImageDraw
 import glob
 import random
 
+
 class AddSPNoise(object):
     def __init__(self, prob):
         self.prob = prob
 
     def __call__(self, tensor):
-        sp = (torch.rand(tensor.size()) < self.prob)*tensor.max()
+        sp = (torch.rand(tensor.size()) < self.prob) * tensor.max()
         return tensor + sp
 
     def __repr__(self):
-        return self.__class__.__name__ + '(prob={0})'.format(self.prob)
+        return self.__class__.__name__ + "(prob={0})".format(self.prob)
+
 
 class AddGaussianNoise(object):
-    def __init__(self, mean=0., std=1.):
+    def __init__(self, mean=0.0, std=1.0):
         self.mean = mean
         self.std = std
 
@@ -29,24 +31,21 @@ class AddGaussianNoise(object):
         return tensor + torch.randn(tensor.size()) * self.std + self.mean
 
     def __repr__(self):
-        return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)
+        return self.__class__.__name__ + "(mean={0}, std={1})".format(
+            self.mean, self.std
+        )
+
 
 class PrintedMNIST(Dataset):
     """Generates images containing a single digit from font"""
 
     def __init__(self, N, random_state, transform=None):
-        """
-        Args:
-            csv_file (string): Path to the csv file with annotations.
-            root_dir (string): Directory with all the images.
-            transform (callable, optional): Optional transform to be applied
-                on a sample.
-        """
+        """"""
         self.N = N
         self.random_state = random_state
         self.transform = transform
 
-        fonts_folder = 'fonts'
+        fonts_folder = "fonts"
 
         # self.fonts = ["Helvetica-Bold-Font.ttf", 'arial-bold.ttf']
         self.fonts = glob.glob(fonts_folder + "/*.ttf")
@@ -67,7 +66,7 @@ class PrintedMNIST(Dataset):
         color = random.randint(200, 255)
 
         # Generate image
-        img = Image.new('L', (256, 256))
+        img = Image.new("L", (256, 256))
 
         target = random.randint(0, 9)
 
@@ -83,8 +82,5 @@ class PrintedMNIST(Dataset):
 
         if self.transform:
             img = self.transform(img)
-
-        # print(img)
-        # 1/0
 
         return img, target
